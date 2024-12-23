@@ -1,11 +1,13 @@
 document.addEventListener("DOMContentLoaded", () => {
     const gridItems = document.querySelectorAll(".grid-item");
+    const resetButton = document.getElementById("reset");
     let squareIndices = [];
     let circleIndices = [];
     let pathStarted = false;
     let pathCompleted = false;
     let previousSquareIndices = [];
     let score = 0;
+    let gameTimeout;
 
     function getRandomIndices(count, exclude = [], minDistance = 0) {
         const indices = [];
@@ -27,7 +29,7 @@ document.addEventListener("DOMContentLoaded", () => {
         squareIndices.forEach(index => {
             gridItems[index].classList.add("square");
         });
-        setTimeout(() => {
+        gameTimeout = setTimeout(() => {
             squareIndices.forEach(index => {
                 gridItems[index].classList.remove("square");
             });
@@ -79,6 +81,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     function resetGame() {
+        clearTimeout(gameTimeout); // Clear any existing timeouts
         pathStarted = false;
         pathCompleted = false;
         squareIndices = [];
@@ -92,7 +95,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     function increaseScore() {
         score++;
-        document.getElementById("poruka").innerHTML = "Score: " + score;
+        document.getElementById("poruka").innerHTML = "vas rezultat je: " + score;
     }
 
     gridItems.forEach(item => {
@@ -103,14 +106,16 @@ document.addEventListener("DOMContentLoaded", () => {
             } else if (pathStarted && !pathCompleted) {
                 if (item.classList.contains("square")) {
                     alert("Game Over! You hit a square.");
+                    resetGame();
                 } else if (item.classList.contains("circle")) {
                     item.classList.add("connected");
                     pathCompleted = true;
-                    increaseScore();
+                    increaseScore(); // Ensure score increases
                     alert("Congratulations! You connected the circles.");
-                    resetGame();
+                    setTimeout(resetGame, 1000); // Delay reset to show the score update
                 } else if (previousSquareIndices.includes([...gridItems].indexOf(item))) {
                     alert("Game Over! You clicked where a square was.");
+                    resetGame();
                 } else {
                     item.classList.add("connected");
                 }
@@ -118,6 +123,12 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     });
 
-    showSquares();
+    resetButton.addEventListener("click", () => {
+        score = 0; // Reset the score when the reset button is clicked
+        document.getElementById("poruka").innerHTML = "vas rezultat je: " + score; // Update the score display
+        resetGame();
+    });
+
+    resetGame(); // Ensure the game starts correctly
 });
 
