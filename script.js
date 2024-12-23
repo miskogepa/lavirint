@@ -35,7 +35,7 @@ document.addEventListener("DOMContentLoaded", () => {
             });
             previousSquareIndices = [...squareIndices];
             showCircles();
-        }, 10000);
+        }, 3000); // Change 10000 to 3000 for 3 seconds
     }
 
     function showCircles() {
