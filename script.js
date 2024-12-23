@@ -23,7 +23,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     function showSquares() {
-        squareIndices = getRandomIndices(4);
+        squareIndices = getRandomIndices(5); // Change 4 to 5
         squareIndices.forEach(index => {
             gridItems[index].classList.add("square");
         });
@@ -37,10 +37,45 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     function showCircles() {
-        circleIndices = getRandomIndices(2, squareIndices, 2);
+        do {
+            circleIndices = getRandomIndices(2, squareIndices, 2); // Ensure minimum 2 fields between circles
+        } while (!isPathConnectable(circleIndices[0], circleIndices[1]));
         circleIndices.forEach(index => {
             gridItems[index].classList.add("circle");
         });
+    }
+
+    function isPathConnectable(start, end) {
+        // Implement a simple pathfinding algorithm to check if a path exists
+        const queue = [start];
+        const visited = new Set();
+        visited.add(start);
+
+        while (queue.length > 0) {
+            const current = queue.shift();
+            if (current === end) return true;
+
+            const neighbors = getNeighbors(current);
+            for (const neighbor of neighbors) {
+                if (!visited.has(neighbor) && !squareIndices.includes(neighbor)) {
+                    visited.add(neighbor);
+                    queue.push(neighbor);
+                }
+            }
+        }
+        return false;
+    }
+
+    function getNeighbors(index) {
+        const neighbors = [];
+        const rowSize = Math.sqrt(gridItems.length);
+
+        if (index % rowSize !== 0) neighbors.push(index - 1); // left
+        if (index % rowSize !== rowSize - 1) neighbors.push(index + 1); // right
+        if (index >= rowSize) neighbors.push(index - rowSize); // up
+        if (index < gridItems.length - rowSize) neighbors.push(index + rowSize); // down
+
+        return neighbors;
     }
 
     function resetGame() {
