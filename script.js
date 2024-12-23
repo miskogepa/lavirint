@@ -36,7 +36,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     function showCircles() {
-        circleIndices = getRandomIndices(2, squareIndices, 4);
+        circleIndices = getRandomIndices(2, squareIndices, 2);
         circleIndices.forEach(index => {
             gridItems[index].classList.add("circle");
         });
