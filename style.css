@@ -1,0 +1,9 @@
+/* ...existing code... */
+
+.score-container {
+    display: none; /* Hide the score-container */
+}
+
+#score, #restart-button {
+    display: none; /* Hide the score and restart button */
+}

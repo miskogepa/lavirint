@@ -5,6 +5,7 @@ document.addEventListener("DOMContentLoaded", () => {
     let pathStarted = false;
     let pathCompleted = false;
     let previousSquareIndices = [];
+    let score = 0;
 
     function getRandomIndices(count, exclude = [], minDistance = 0) {
         const indices = [];
@@ -42,6 +43,23 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     }
 
+    function resetGame() {
+        pathStarted = false;
+        pathCompleted = false;
+        squareIndices = [];
+        circleIndices = [];
+        previousSquareIndices = [];
+        gridItems.forEach(item => {
+            item.classList.remove("square", "circle", "connected");
+        });
+        showSquares();
+    }
+
+    function increaseScore() {
+        score++;
+        document.getElementById("poruka").innerHTML = "Score: " + score;
+    }
+
     gridItems.forEach(item => {
         item.addEventListener("click", (e) => {
             if (item.classList.contains("circle") && !pathStarted) {
@@ -50,17 +68,14 @@ document.addEventListener("DOMContentLoaded", () => {
             } else if (pathStarted && !pathCompleted) {
                 if (item.classList.contains("square")) {
                     alert("Game Over! You hit a square.");
-                    location.reload();
                 } else if (item.classList.contains("circle")) {
                     item.classList.add("connected");
                     pathCompleted = true;
+                    increaseScore();
                     alert("Congratulations! You connected the circles.");
-                    circleIndices.forEach(index => {
-                        gridItems[index].classList.add("connected");
-                    });
+                    resetGame();
                 } else if (previousSquareIndices.includes([...gridItems].indexOf(item))) {
                     alert("Game Over! You clicked where a square was.");
-                    location.reload();
                 } else {
                     item.classList.add("connected");
                 }
@@ -70,3 +85,4 @@ document.addEventListener("DOMContentLoaded", () => {
 
     showSquares();
 });
+
